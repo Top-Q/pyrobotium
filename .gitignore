@@ -3,4 +3,6 @@
 *.DS_Store
 *.swp
 *.out
+.project
+.pydevproject
 /build
