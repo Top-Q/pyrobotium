@@ -23,7 +23,7 @@ import socket
 
 class Device():
 	"""	
-	Represents an Android device
+	Represents an Android device interface
 	"""
 	
 	# Android hardware buttons
@@ -55,7 +55,11 @@ class Device():
 		print("ADB controller started")
 	
 	def _decode(self, rawData):
+		"""
+		Decode the response json string
+		"""
 		print("Raw response: %s" % rawData)
+		
 		return rawData
 	
 	def _send_data(self, command, *params):
@@ -68,7 +72,7 @@ class Device():
 		"""
 		
 		try:            
-			serialized = json.dumps({ 'Command' : command, 'Params':params })
+			serialized = json.dumps({ 'Command' : command, 'Params' : params })
 						
 			print("Sending command %s to device. Raw data (%s)" % (command, serialized))
 			
@@ -89,6 +93,9 @@ class Device():
 			raise TimeoutError(e)
 	
 	def set_port_forwarding(self, local, remote):
+		"""
+		Configure port forwarding to allow TCP connectivity with the device
+		"""
 		self._adb.forward_socket("tcp:%s" % local, "tcp:%s" % remote)
 	
 	def run_test_on_device(self, packageName, testClassName, testName):
@@ -103,6 +110,9 @@ class Device():
 		self._adb.run_cmd(cmd)
 	
 	def launch(self):
+		"""
+		Launch the application under test
+		"""
 		return self._send_data("launch")
 	
 	def get_text_view(self, index):
