@@ -1,0 +1,27 @@
+This project is used to allow communication with Robotium based Android testing solution.
+The idea is to allow access from any python based application to the remote agent running on Android device.
+
+The following projects are being used:
+1. pyadb - https://github.com/sch3m4/pyadb.git
+2. mobile-automation - https://github.com/itaiag/mobile-automation.git; the protocol is defined by the robotium-client project
+
+Requirements:
+============
+
+1. Install Android SDK
+2. Setup the pyadb - sudo easy_install pyadb
+3. Compile the robotium-server project (maven based) and get the .apk file from the project /bin directory
+4. Install the .apk file manually on the device
+5. Modify /res/conf.txt file to match your application under test
+6. Install your application under test manually on the device
+
+Setup:
+=====
+
+$ python setup.py build
+$ sudo python setup.py install
+
+Examples:
+========
+
+See /examples/example.py

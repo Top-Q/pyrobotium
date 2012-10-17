@@ -1,0 +1,2 @@
+LAUNCHER_ACTIVITY_FULL_CLASSNAME = com.example.android.notepad.NotesList
+TARGET_PACKAGE_ID = com.example.android.notepad
