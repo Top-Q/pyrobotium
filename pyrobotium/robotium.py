@@ -64,7 +64,7 @@ class Device():
 	
 	def _send_data(self, command, *params):
 		"""
-		Send a command via HTTP to the remote agent
+		Send a command via TCP to the remote agent
 		
 		@command - remote agent command
 		@param data - any number of arguments for the command
@@ -80,7 +80,8 @@ class Device():
 			
 			if s:
 				s.connect((self._host, self._port))
-				s.send(serialized)
+				# send the string with a terminating char
+				s.send("%s\n" % serialized)
 				try:
 					rawResponse = s.recv(Device.BUFFER_SIZE)
 					return self._decode(rawResponse)
