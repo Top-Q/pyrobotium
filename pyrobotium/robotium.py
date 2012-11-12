@@ -54,13 +54,24 @@ class Device():
 						
 		print("ADB controller started")
 	
+	def _ascii_encode_dict(self, data):
+	    ascii_encode = lambda x: x.encode('ascii')
+	    
+	    return dict(map(ascii_encode, pair) for pair in data.items())
+   
 	def _decode(self, rawData):
 		"""
 		Decode the response json string
 		"""
 		print("Raw response: %s" % rawData)
 		
-		return rawData
+		res = json.loads(rawData, object_hook=self._ascii_encode_dict)
+		# check the response
+		val = res.get("RESULT")
+		if "ERROR" in val:
+			print("%s" % val)
+		
+		return val
 	
 	def _send_data(self, command, *params):
 		"""

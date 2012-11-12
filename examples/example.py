@@ -16,14 +16,22 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 import sys
+import time
 
 from pyrobotium.robotium import Device 
 
 def main():
+    """
+    This example creates a connection to device and uses the Android examples "NotePad" application
+    to demonstrate the usage of the module.
+    """
     device = Device("localhost", 4321, "/Users/oziransky/android-sdk-macosx/platform-tools/adb", "emulator-5554")
     device.set_port_forwarding(4321, 4321)
     device.run_test_on_device("org.topq.jsystem.mobile", "RobotiumServer", "testMain")
     device.launch()
+    
+    # wait for the app to launch
+    time.sleep(2)
     
     exit(0)
     
