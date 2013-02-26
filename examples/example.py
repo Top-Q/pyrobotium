@@ -25,13 +25,20 @@ def main():
     This example creates a connection to device and uses the Android examples "NotePad" application
     to demonstrate the usage of the module.
     """
-    device = Device("localhost", 4321, "/Users/oziransky/android-sdk-macosx/platform-tools/adb", "emulator-5554")
-    device.set_port_forwarding(4321, 4321)
-    device.run_test_on_device("org.topq.jsystem.mobile", "RobotiumServer", "testMain")
-    device.launch()
+    device = Device("localhost", 4321, "emulator-5554")
+    #device.set_port_forwarding(4321, 4321)
+    #device.run_test_on_device("org.topq.jsystem.mobile", "RobotiumServer", "testMain")
+    device.launch("org.topq.mobile.example.loginapp.LoginActivity")
+    device.enter_text(0, "tal@tal.com")
+    device.enter_text(1, "1234567")
+    device.click_on_button_with_text("Sign in or register")
+    time.sleep(5)
+    device.click_on_button_with_text("Ok")
+    device.click_on_button_with_text("Sign in or register")
+    time.sleep(5)
+    device.click_on_button_with_text("Ok")
+    print "Finished"
     
-    # wait for the app to launch
-    time.sleep(2)
     
     exit(0)
     

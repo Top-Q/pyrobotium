@@ -17,7 +17,6 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 """
 import sys
 from exceptions import *
-from pyadb import ADB
 import json
 import socket
 
@@ -33,45 +32,43 @@ class Device():
 	# TCP parameters
 	BUFFER_SIZE = 1024
 	
-	def __init__(self, host, port, adbLocation, device):
+	def __init__(self, host, port, device):
 		"""
 		@param host - The hostname or IP address of the device
 		@param port - The port robotium listens to
 		@param adbLocation - The location of the adb executable
 		@device - The serial number of the device
 		"""
-		self._adbLocation = adbLocation
 		self._device = device
 		self._host = host
 		self._port = port
 		
 		# init the adb controller
-		self._adb = ADB()
+		#self._adb = ADB()
 		
-		self._adb.set_adb_path(adbLocation)
-		devices = []
-		self._adb.set_target_device(devices.append(device))
+		#self._adb.set_adb_path(adbLocation)
+		#self._adb.set_target_device(devices.append(device))
 						
-		print("ADB controller started")
+		print("Device starterd")
 	
 	def _ascii_encode_dict(self, data):
-	    ascii_encode = lambda x: x.encode('ascii')
-	    
-	    return dict(map(ascii_encode, pair) for pair in data.items())
-   
+		ascii_encode = lambda x: x.encode('ascii')
+		return dict(map(ascii_encode, pair) for pair in data.items())
+	
 	def _decode(self, rawData):
 		"""
 		Decode the response json string
 		"""
 		print("Raw response: %s" % rawData)
 		
-		res = json.loads(rawData, object_hook=self._ascii_encode_dict)
+		#res = json.loads(rawData, object_hook=self._ascii_encode_dict)
+		res = json.loads(rawData)
 		# check the response
-		val = res.get("RESULT")
-		if "ERROR" in val:
-			print("%s" % val)
+		succeeded = res.get("succeeded")
+		if succeeded == "false":
+			print("%s" % res.get("response"))
 		
-		return val
+		return succeeded
 	
 	def _send_data(self, command, *params):
 		"""
@@ -83,7 +80,7 @@ class Device():
 		"""
 		
 		try:            
-			serialized = json.dumps({ 'Command' : command, 'Params' : params })
+			serialized = json.dumps({ 'command' : command, 'params' : params })
 						
 			print("Sending command %s to device. Raw data (%s)" % (command, serialized))
 			
@@ -99,33 +96,17 @@ class Device():
 				finally:
 					s.close()
 			else:
-				raise RobotiumError("Unable to open %s - received an empty file descriptor", host)
+				raise RobotiumError("Unable to open %s - received an empty file descriptor")
 			
 		except socket.timeout, e:
 			raise TimeoutError(e)
 	
-	def set_port_forwarding(self, local, remote):
-		"""
-		Configure port forwarding to allow TCP connectivity with the device
-		"""
-		self._adb.forward_socket("tcp:%s" % local, "tcp:%s" % remote)
 	
-	def run_test_on_device(self, packageName, testClassName, testName):
-		"""
-		Executes an instrumentation command that will launch the agent as a test
-		on remote android device
-		"""
-		cmd = "shell am instrument -e class %s.%s#%s %s/android.test.InstrumentationTestRunner" % (packageName, testClassName, testName, packageName)
-		
-		print("Running instrumentation command %s" % cmd)
-		
-		self._adb.run_cmd(cmd)
-	
-	def launch(self):
+	def launch(self,activity):
 		"""
 		Launch the application under test
 		"""
-		return self._send_data("launch")
+		return self._send_data("launch",activity)
 	
 	def get_text_view(self, index):
 		return self._send_data("getTextView", index)
